@@ -9,6 +9,7 @@
         'adBlockEnabled',
         'hidePromotions',
         'confirmAutoplay',
+        "schizoMode"
     ];
 
     for (const id of settingIds) {
