@@ -1,0 +1,12 @@
+{
+  "name": "NovaChessServer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0",
+    "ws": "^8.18.0"
+  }
+}
