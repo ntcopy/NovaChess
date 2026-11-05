@@ -9,7 +9,12 @@
         'adBlockEnabled',
         'hidePromotions',
         'confirmAutoplay',
-        "schizoMode"
+        "schizoMode",
+        "seizureMode",
+        "earthquake",
+        "drunkMode",
+        "blunderAlarm",
+        "trashTalk"
     ];
 
     for (const id of settingIds) {
