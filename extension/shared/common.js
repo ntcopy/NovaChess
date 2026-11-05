@@ -144,7 +144,12 @@
         adBlockEnabled: false,
         hidePromotions: false,
         confirmAutoplay: true,
-        schizoMode: false
+        schizoMode: false,
+        seizureMode: false,
+        earthquake: false,
+        drunkMode: false,
+        blunderAlarm: false,
+        trashTalk: false
     };
 
     function normalizeSettings(o) {
@@ -154,7 +159,12 @@
             adBlockEnabled: bool(o.adBlockEnabled, DEFAULT_SETTINGS.adBlockEnabled),
             hidePromotions: bool(o.hidePromotions, DEFAULT_SETTINGS.hidePromotions),
             confirmAutoplay: bool(o.confirmAutoplay, DEFAULT_SETTINGS.confirmAutoplay),
-            schizoMode: bool(o.schizoMode, DEFAULT_SETTINGS.schizoMode)
+            schizoMode: bool(o.schizoMode, DEFAULT_SETTINGS.schizoMode),
+            seizureMode: bool(o.seizureMode, DEFAULT_SETTINGS.seizureMode),
+            earthquake: bool(o.earthquake, DEFAULT_SETTINGS.earthquake),
+            drunkMode: bool(o.drunkMode, DEFAULT_SETTINGS.drunkMode),
+            blunderAlarm: bool(o.blunderAlarm, DEFAULT_SETTINGS.blunderAlarm),
+            trashTalk: bool(o.trashTalk, DEFAULT_SETTINGS.trashTalk),
         };
     }
 
