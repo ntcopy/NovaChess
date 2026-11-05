@@ -1040,6 +1040,24 @@
             );
         }
 
+        // Sends each finished eval to the content-script features (Blunder alarm, Trash talk).
+        function emitEval(m) {
+            const top = m.lines?.[0];
+            // skip stale results and schizo-mode decoy positions
+            if (!top?.score || m.fen !== readPosition().fen) return;
+            const [, t, , , , full] = m.fen.split(' ');
+            const w = toWhite(top.score, t);
+            const cp = w.type === 'mate' ?
+                Math.sign(w.value) * 1500 :
+                Math.max(-1500, Math.min(1500, w.value));
+            window.postMessage({
+                __novaEval: 1,
+                cp,
+                me: myColor(),
+                ply: (Number(full) - 1) * 2 + (t === 'b' ? 1 : 0),
+            }, location.origin);
+        }
+
         // ---------- Rendering a server message ----------
         function render(m, done) {
             const turn = m.fen.split(' ')[1];
@@ -1516,6 +1534,7 @@
                         done: true
                     };
                     lastDone = m;
+                    emitEval(m); 
                     render(m, true);
                     maybeAutoplay(m);
                 }
