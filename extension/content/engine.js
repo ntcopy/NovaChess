@@ -32,6 +32,7 @@
     ];
     let T = SF.normalizeTheme(null);
     let confirmAutoplay = SF.DEFAULT_SETTINGS.confirmAutoplay;
+    let schizoMode = SF.DEFAULT_SETTINGS.schizoMode;
     let themeKey = JSON.stringify(T);
     let session = null;
 
@@ -57,6 +58,60 @@
         autoplayConfirmations.delete(data.requestId);
         resolve(data.approved === true);
     });
+
+    function randomFen() {
+      const rnd = (n) => Math.floor(Math.random() * n);
+      const KN = [[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];
+      const BD = [[1,1],[1,-1],[-1,1],[-1,-1]];
+      const RD = [[1,0],[-1,0],[0,1],[0,-1]];
+      const at = (b, r, c) => (r >= 0 && r < 8 && c >= 0 && c < 8 ? b[r * 8 + c] : null);
+
+      // Is square (r,c) attacked by colour `by` ('w' | 'b')? Row 0 = rank 8.
+      function attacked(b, r, c, by) {
+        const L = (p) => (by === 'w' ? p.toUpperCase() : p);
+        const pr = by === 'w' ? r + 1 : r - 1;
+        for (const dc of [-1, 1]) if (at(b, pr, c + dc) === L('p')) return true;
+        for (const [dr, dc] of KN) if (at(b, r + dr, c + dc) === L('n')) return true;
+        for (const [dr, dc] of [...BD, ...RD]) if (at(b, r + dr, c + dc) === L('k')) return true;
+        for (const [dirs, a, q] of [[BD, L('b'), L('q')], [RD, L('r'), L('q')]]) {
+          for (const [dr, dc] of dirs) {
+            let rr = r + dr, cc = c + dc;
+            while (at(b, rr, cc) === '') { rr += dr; cc += dc; }
+            const p = at(b, rr, cc);
+            if (p === a || p === q) return true;
+          }
+        }
+        return false;
+      }
+
+      for (;;) {
+        const b = Array(64).fill('');
+        const free = (rows) => {
+          for (;;) { const r = rows ? rows[rnd(rows.length)] : rnd(8); const i = r * 8 + rnd(8); if (!b[i]) return i; }
+        };
+        const wk = free(); b[wk] = 'K';
+        let bk; do { bk = free(); } while (Math.abs((bk >> 3) - (wk >> 3)) < 2 && Math.abs((bk & 7) - (wk & 7)) < 2);
+        b[bk] = 'k';
+
+        for (const white of [true, false]) {
+          const put = (p, n, rows) => { for (let i = 0; i < n; i++) b[free(rows)] = white ? p.toUpperCase() : p; };
+          put('p', rnd(9), [1, 2, 3, 4, 5, 6]);      // pawns never on rank 1 or 8
+          put('n', rnd(3)); put('b', rnd(3)); put('r', rnd(3)); put('q', rnd(2));
+        }
+
+        const stm = Math.random() < 0.5 ? 'w' : 'b';
+        // neither king may be in check, so the position is legal whoever moves
+        if (attacked(b, bk >> 3, bk & 7, 'w') || attacked(b, wk >> 3, wk & 7, 'b')) continue;
+
+        const rows = [];
+        for (let r = 0; r < 8; r++) {
+          let s = '', e = 0;
+          for (let c = 0; c < 8; c++) { const p = b[r * 8 + c]; if (p) { if (e) s += e; e = 0; s += p; } else e++; }
+          rows.push(s + (e || ''));
+        }
+        return `${rows.join('/')} ${stm} - - 0 1`;
+      }
+    }
 
     function requestAutoplayConfirmation() {
         const requestId = crypto.randomUUID();
@@ -1208,7 +1263,7 @@
         }
 
         async function playMove(m) {
-            if (playing()) return;
+            if (playing) return;
             playing = true;
             const san = m.lines?.[0]?.pvSan?.[0] || m.move;
             try {
@@ -1231,7 +1286,7 @@
         function maybeAutoplay(m) {
             clearTimeout(autoplayTimer);
 
-            if (!S.autoplay || !m.move || playing()) return;
+            if (!S.autoplay || !m.move || playing) return;
             if (m.fen.split(' ')[1] !== myColor()) return;
 
             const selected = S.humanization ?
@@ -1372,10 +1427,13 @@
             setStatus(myTurn ? 'Thinking…' : "Opponent's turn", '#f5a623', true);
             if (depthMode) stopProgress();
             else startProgress(ms);
+            const sendFen = schizoMode
+            ? randomFen().replace(/ [wb] /, ` ${pos.turn} `) 
+            : pos.fen;
             ws.send(JSON.stringify({
                 type: 'analyze',
                 id,
-                fen: pos.fen,
+                fen: sendFen,
                 movetime: depthMode ? 15000 : ms, // in depth mode this is only a safety cap
                 depth: depthMode ? S.depth : undefined,
                 lines: myTurn ? (S.humanization ? 5 : S.lines) : 1,
@@ -1552,6 +1610,7 @@
     function applyState(raw) {
         const st = SF.normalizeState(raw); // never trust postMessage payloads
         confirmAutoplay = st.settings.confirmAutoplay;
+        schizoMode = st.settings.schizoMode;
         const urlBefore = CFG.serverUrl;
         CFG.enabled = st.enabled;
         CFG.serverUrl = st.serverUrl;
