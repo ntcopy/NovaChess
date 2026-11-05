@@ -1,0 +1,89 @@
+{
+  "manifest_version": 3,
+  "name": "NovaChess",
+  "version": "1.0.0",
+  "description": "Made by Fxke",
+  "minimum_chrome_version": "111",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
+  ],
+  "host_permissions": [
+    "https://www.chess.com/*",
+    "https://api.chess.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "novachess_logos",
+        "enabled": true,
+        "path": "rules/rules.json"
+      },
+      {
+        "id": "novachess_ads",
+        "enabled": false,
+        "path": "rules/chesscom_ads.json"
+      }
+    ]
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "NovaChess",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "novachess-logo.svg",
+        "novachess-pawn.svg",
+        "content/modal.js",
+        "content/modal.css"
+      ],
+      "matches": [
+        "https://www.chess.com/*",
+        "https://chess.com/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.chess.com/*"
+      ],
+      "js": [
+        "shared/common.js",
+        "content/bridge.js",
+        "content/content.js",
+        "content/adblock.js",
+        "content/modal.js"
+      ],
+      "css": [
+        "content/modal.css"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.chess.com/*"
+      ],
+      "js": [
+        "shared/common.js",
+        "content/engine.js"
+      ],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ]
+}

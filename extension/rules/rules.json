@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/novachess-logo.svg"
+      }
+    },
+    "condition": {
+      "urlFilter": "||chess.com/bundles/web/images/logo/logo.svg",
+      "resourceTypes": ["image"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/novachess-pawn.svg"
+      }
+    },
+    "condition": {
+      "urlFilter": "||chess.com/bundles/web/images/logo/logo-pawn.svg",
+      "resourceTypes": ["image"]
+    }
+  }
+]
