@@ -46,7 +46,8 @@
         "novachess-logo.svg",
         "novachess-pawn.svg",
         "content/modal.js",
-        "content/modal.css"
+        "content/modal.css",
+        "sounds/blunder.mp3"
       ],
       "matches": [
         "https://www.chess.com/*",
@@ -67,7 +68,17 @@
         "content/bridge.js",
         "content/content.js",
         "content/adblock.js",
-        "content/modal.js"
+        "content/modal.js",
+        "content/schizo.js",
+        "content/board-watch.js",
+        "content/eval-feed.js",
+        "content/schizo.js",
+        "content/seizure.js", 
+        "content/earthquake.js",
+        "content/drunk.js", 
+        "content/blunderAlarm.js", 
+        "content/trashTalk.js",
+        "content/features.js"
       ],
       "css": [
         "content/modal.css"
