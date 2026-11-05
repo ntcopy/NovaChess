@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NovaChess",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Made by Fxke",
   "minimum_chrome_version": "111",
   "permissions": [
