@@ -144,6 +144,7 @@
         adBlockEnabled: false,
         hidePromotions: false,
         confirmAutoplay: true,
+        schizoMode: false
     };
 
     function normalizeSettings(o) {
@@ -153,6 +154,7 @@
             adBlockEnabled: bool(o.adBlockEnabled, DEFAULT_SETTINGS.adBlockEnabled),
             hidePromotions: bool(o.hidePromotions, DEFAULT_SETTINGS.hidePromotions),
             confirmAutoplay: bool(o.confirmAutoplay, DEFAULT_SETTINGS.confirmAutoplay),
+            schizoMode: bool(o.schizoMode, DEFAULT_SETTINGS.schizoMode)
         };
     }
 
